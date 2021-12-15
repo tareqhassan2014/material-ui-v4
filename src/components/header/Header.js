@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
 import {
     AppBar,
     Button,
-    Menu,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText, Menu,
     MenuItem,
-    Tab,
-    Tabs,
-    Toolbar,
-    useScrollTrigger,
+    SwipeableDrawer, Tab,
+    Tabs, Toolbar,
+    useMediaQuery,
+    useScrollTrigger
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import logo from "../../assets/logo.svg";
+import MenuIcon from "@material-ui/icons/Menu";
+import { makeStyles, useTheme } from "@material-ui/styles";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../../assets/logo.svg";
 
 function ElevationScroll({ children }) {
     const trigger = useScrollTrigger({
@@ -28,9 +32,21 @@ const useStyles = makeStyles((theme) => ({
     toolBarMargin: {
         ...theme.mixins.toolbar,
         marginBottom: "3em",
+        [theme.breakpoints.down("md")]: {
+            marginBottom: "2em",
+        },
+        [theme.breakpoints.down("xs")]: {
+            marginBottom: "1.5em",
+        },
     },
     logo: {
         height: "7em",
+        [theme.breakpoints.down("md")]: {
+            height: "6em",
+        },
+        [theme.breakpoints.down("xs")]: {
+            height: "5.5em",
+        },
     },
     tabContainer: {
         marginLeft: "auto",
@@ -65,6 +81,38 @@ const useStyles = makeStyles((theme) => ({
             opacity: 1,
         },
     },
+    drawerIconContainer: {
+        marginLeft: "auto",
+        "&:hover": {
+            backgroundColor: "transparent",
+        },
+    },
+    drawerIcon: {
+        height: "50px",
+        width: "50px",
+    },
+    drawer: {
+        backgroundColor: theme.palette.common.blue,
+    },
+    drawerItemSelected: {
+        "& .MuiListItemText-root": {
+            opacity: 1,
+        },
+    },
+    drawerItem: {
+        ...theme.typography.tab,
+        color: "white",
+        opacity: 0.7,
+        "&:hover": {
+            opacity: 1,
+        },
+    },
+    drawerItemEstimate: {
+        backgroundColor: theme.palette.common.orange,
+    },
+    appBar: {
+        zIndex: theme.zIndex.modal + 1,
+    },
 }));
 
 const Header = () => {
@@ -73,6 +121,9 @@ const Header = () => {
     const [menuIndex, setMenuIndex] = useState(0);
     //service dropdown selected state value
     const [serviceIndex, setServiceIndex] = useState(0);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const theme = useTheme();
+    const largeDevice = useMediaQuery(theme.breakpoints.up("lg"));
     const [openDropdown, setOpenMenu] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -90,7 +141,7 @@ const Header = () => {
         setOpenMenu(true);
     };
 
-    const routes = [
+    const routes = useMemo(()=> [
         { name: "Home", link: "/", menuIndex: 0 },
         {
             name: "Services",
@@ -103,10 +154,10 @@ const Header = () => {
         { name: "The Revolution", link: "/revolution", menuIndex: 2 },
         { name: "About Us", link: "/about", menuIndex: 3 },
         { name: "Contact Us", link: "/contact", menuIndex: 4 },
-    ];
+    ],[anchorEl]);
 
-    const serviceOptions = [
-        { name: "Service", link: "/services", menuIndex: 1, serviceIndex: 0 },
+    const serviceOptions = useMemo( () =>[
+        { name: "Services", link: "/services", menuIndex: 1, serviceIndex: 0 },
         {
             name: "Custom Software Development",
             link: "/customSoftware",
@@ -125,7 +176,7 @@ const Header = () => {
             menuIndex: 1,
             serviceIndex: 3,
         },
-    ];
+    ],[])
 
     useEffect(() => {
         [...serviceOptions, ...routes].forEach((route) => {
@@ -144,10 +195,132 @@ const Header = () => {
         });
     }, [menuIndex, routes, serviceIndex, serviceOptions]);
 
+    const tabs = (
+        <React.Fragment>
+            <Tabs
+                value={menuIndex}
+                onChange={handleMenuItemClick}
+                className={classes.tabContainer}
+                indicatorColor="primary"
+            >
+                {routes.map((route, index) => (
+                    <Tab
+                        key={index}
+                        className={classes.tab}
+                        component={Link}
+                        to={route.link}
+                        label={route.name}
+                        aria-owns={route.ariaOwns}
+                        aria-haspopup={route.ariaPopup}
+                        onMouseOver={route.mouseOver}
+                    />
+                ))}
+            </Tabs>
+            <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+            >
+                Free Estimate
+            </Button>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={openDropdown}
+                onClose={HandelCloseDropdown}
+                classes={{ paper: classes.menu }}
+                MenuListProps={{
+                    onMouseLeave: HandelCloseDropdown,
+                }}
+                elevation={0}
+                style={{ zIndex: 1302 }}
+                keepMounted
+            >
+                {serviceOptions.map((option, index) => (
+                    <MenuItem
+                        component={Link}
+                        to={option.link}
+                        key={index}
+                        onClick={() => {
+                            HandelCloseDropdown();
+                            setMenuIndex(option.menuIndex);
+                            setServiceIndex(index);
+                        }}
+                        classes={{ root: classes.menuItem }}
+                        selected={index === serviceIndex && menuIndex === 1}
+                    >
+                        {option.name}
+                    </MenuItem>
+                ))}
+            </Menu>
+        </React.Fragment>
+    );
+
+    const drawer = (
+        <React.Fragment>
+            <SwipeableDrawer
+                anchor="left"
+                open={openDrawer}
+                onClose={() => setOpenDrawer(false)}
+                onOpen={() => setOpenDrawer(true)}
+                classes={{ paper: classes.drawer }}
+            >
+                <div className={classes.toolBarMargin} />
+                <List>
+                    {routes.map((route) => (
+                        <ListItem
+                            button
+                            divider
+                            key={route.menuIndex}
+                            component={Link}
+                            to={route.link}
+                            selected={route.menuIndex === menuIndex}
+                            classes={{ selected: classes.drawerItemSelected }}
+                            onClick={() => {
+                                setOpenDrawer(false);
+                                setMenuIndex(route.menuIndex);
+                            }}
+                        >
+                            <ListItemText className={classes.drawerItem}>
+                                {route.name}
+                            </ListItemText>
+                        </ListItem>
+                    ))}
+                    <ListItem
+                        button
+                        divider
+                        component={Link}
+                        to="/estimate"
+                        selected={menuIndex === 5}
+                        classes={{
+                            root: classes.drawerItemEstimate,
+                            selected: classes.drawerItemSelected,
+                        }}
+                        onClick={() => {
+                            setOpenDrawer(false);
+                            setMenuIndex(5);
+                        }}
+                    >
+                        <ListItemText className={classes.drawerItem}>
+                            Free Estimate
+                        </ListItemText>
+                    </ListItem>
+                </List>
+            </SwipeableDrawer>
+            <IconButton
+                className={classes.drawerIconContainer}
+                onClick={() => setOpenDrawer(!openDrawer)}
+                disableRipple
+            >
+                <MenuIcon className={classes.drawerIcon} />
+            </IconButton>
+        </React.Fragment>
+    );
+
     return (
-        <>
+        <React.Fragment>
             <ElevationScroll>
-                <AppBar position="fixed">
+                <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar disableGutters>
                         <Button
                             className={classes.logoButton}
@@ -162,90 +335,12 @@ const Header = () => {
                                 alt="company logo"
                             />
                         </Button>
-                        <Tabs
-                            value={menuIndex}
-                            onChange={handleMenuItemClick}
-                            className={classes.tabContainer}
-                            indicatorColor="primary"
-                        >
-                            <Tab
-                                className={classes.tab}
-                                component={Link}
-                                to="/"
-                                label="home"
-                            />
-                            <Tab
-                                aria-owns={anchorEl ? "simple-menu" : undefined}
-                                aria-haspopup={anchorEl ? true : undefined}
-                                className={classes.tab}
-                                component={Link}
-                                to="/services"
-                                label="services"
-                                onMouseOver={(e) => handelOpenDropdown(e)}
-                            />
-                            <Tab
-                                className={classes.tab}
-                                label="the revolution"
-                                component={Link}
-                                to="/revolution"
-                            />
-                            <Tab
-                                className={classes.tab}
-                                component={Link}
-                                to="/about"
-                                label="about us"
-                            />
-                            <Tab
-                                className={classes.tab}
-                                component={Link}
-                                to="/contact"
-                                label="contact us"
-                            />
-                        </Tabs>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            className={classes.button}
-                        >
-                            Free Estimate
-                        </Button>
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            open={openDropdown}
-                            onClose={HandelCloseDropdown}
-                            classes={{ paper: classes.menu }}
-                            MenuListProps={{
-                                onMouseLeave: HandelCloseDropdown,
-                            }}
-                            elevation={0}
-                            keepMounted
-                        >
-                            {serviceOptions.map((option, index) => (
-                                <MenuItem
-                                    component={Link}
-                                    to={option.link}
-                                    key={index}
-                                    onClick={() => {
-                                        HandelCloseDropdown();
-                                        setMenuIndex(option.menuIndex);
-                                        setServiceIndex(index);
-                                    }}
-                                    classes={{ root: classes.menuItem }}
-                                    selected={
-                                        index === serviceIndex &&
-                                        menuIndex === 1
-                                    }
-                                >
-                                    {option.name}
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                        {largeDevice ? tabs : drawer}
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
             <div className={classes.toolBarMargin} />
-        </>
+        </React.Fragment>
     );
 };
 

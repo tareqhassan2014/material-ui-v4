@@ -1,6 +1,5 @@
 import { ThemeProvider } from "@material-ui/core";
 import { Route, Routes } from "react-router-dom";
-import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import theme from "./components/theme/theme";
 
@@ -23,7 +22,6 @@ const App = () => {
                 <Route path="/estimate" element={<div>estimate</div>} />
             </Routes>
 
-            <Footer />
         </ThemeProvider>
     );
 };
