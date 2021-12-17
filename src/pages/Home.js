@@ -1,7 +1,11 @@
 import { Grid, makeStyles } from "@material-ui/core";
+import CallToAction from "../components/CallToAction/CallToAction";
 import CustomSoftware from "../components/customSoftware/CustomSoftware";
 import HeroBlock from "../components/heroBlock/HeroBlock";
+import InformationBlock from "../components/informationBlock/InformationBlock";
 import MobileApp from "../components/mobileApp/MobileApp";
+import RevolutionBlock from "../components/revolutionBlock/RevolutionBlock";
+import WebsiteBlock from "../components/websiteBlock/WebsiteBlock";
 
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
@@ -21,6 +25,18 @@ const Home = () => {
             </Grid>
             <Grid item>
                 <MobileApp />
+            </Grid>
+            <Grid item>
+                <WebsiteBlock />
+            </Grid>
+            <Grid item>
+                <RevolutionBlock />
+            </Grid>
+            <Grid item>
+                <InformationBlock />
+            </Grid>
+            <Grid item>
+                <CallToAction />
             </Grid>
         </Grid>
     );

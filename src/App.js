@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 
 const App = () => {
     const [menuIndex, setMenuIndex] = useState(0);
-    //service dropdown selected state value
     const [serviceIndex, setServiceIndex] = useState(0);
 
     return (
