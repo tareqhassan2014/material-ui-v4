@@ -1,21 +1,20 @@
 import { Grid, Hidden, makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import footerAdornment from "../../assets/Footer Adornment.svg";
 import facebook from "../../assets/facebook.svg";
-import twitter from "../../assets/twitter.svg";
+import footerAdornment from "../../assets/Footer Adornment.svg";
 import instagram from "../../assets/instagram.svg";
+import twitter from "../../assets/twitter.svg";
 
 const useStyles = makeStyles((theme) => ({
     footer: {
-        backgroundColor: "blue",
-        // backgroundColor: theme.palette.common.blue,
+        backgroundColor: theme.palette.common.blue,
         width: "100%",
         zIndex: 1302,
+        position: "relative",
     },
     adornment: {
         width: "25em",
         verticalAlign: "bottom",
-        position: "relative",
         [theme.breakpoints.down("md")]: {
             width: "21em",
         },
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Footer = () => {
+const Footer = ({ setMenuIndex, serviceIndex, setServiceIndex, menuIndex }) => {
     const classes = useStyles();
     return (
         <footer className={classes.footer}>
@@ -71,6 +70,7 @@ const Footer = () => {
                                 className={classes.link}
                                 component={Link}
                                 to="/"
+                                onClick={() => setMenuIndex(0)}
                             >
                                 home
                             </Grid>
@@ -83,7 +83,8 @@ const Footer = () => {
                                 item
                                 className={classes.link}
                                 component={Link}
-                                to="/service"
+                                to="/services"
+                                onClick={() => setMenuIndex(1)}
                             >
                                 service
                             </Grid>
@@ -91,7 +92,8 @@ const Footer = () => {
                                 item
                                 className={classes.link}
                                 component={Link}
-                                to="/software"
+                                to="/customSoftware"
+                                onClick={() => setMenuIndex(1)}
                             >
                                 custom software development
                             </Grid>
@@ -99,7 +101,8 @@ const Footer = () => {
                                 item
                                 className={classes.link}
                                 component={Link}
-                                to="/mobile"
+                                to="/mobileApps"
+                                onClick={() => setMenuIndex(1)}
                             >
                                 mobile app development
                             </Grid>
@@ -108,6 +111,7 @@ const Footer = () => {
                                 className={classes.link}
                                 component={Link}
                                 to="/website"
+                                onClick={() => setMenuIndex(1)}
                             >
                                 website development
                             </Grid>
@@ -158,6 +162,7 @@ const Footer = () => {
                                 className={classes.link}
                                 component={Link}
                                 to="/about"
+                                onClick={() => setMenuIndex(3)}
                             >
                                 About us
                             </Grid>
@@ -186,7 +191,8 @@ const Footer = () => {
                                 item
                                 className={classes.link}
                                 component={Link}
-                                to="/"
+                                to="/contact"
+                                onClick={() => setMenuIndex(4)}
                             >
                                 contact US
                             </Grid>

@@ -1,19 +1,28 @@
-import { Box } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
+import CustomSoftware from "../components/customSoftware/CustomSoftware";
+import HeroBlock from "../components/heroBlock/HeroBlock";
+import MobileApp from "../components/mobileApp/MobileApp";
+
+const useStyles = makeStyles((theme) => ({
+    mainContainer: {
+        marginTop: "5em",
+    },
+}));
 
 const Home = () => {
+    const classes = useStyles();
     return (
-        <>
-            <Box my={2}>
-                {[...new Array(120)]
-                    .map(
-                        () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
-                    )
-                    .join("\n")}
-            </Box>
-        </>
+        <Grid container direction="column" className={classes.mainContainer}>
+            <Grid item>
+                <HeroBlock />
+            </Grid>
+            <Grid item>
+                <CustomSoftware />
+            </Grid>
+            <Grid item>
+                <MobileApp />
+            </Grid>
+        </Grid>
     );
 };
 

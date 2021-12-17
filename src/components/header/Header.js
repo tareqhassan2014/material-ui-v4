@@ -4,12 +4,15 @@ import {
     IconButton,
     List,
     ListItem,
-    ListItemText, Menu,
+    ListItemText,
+    Menu,
     MenuItem,
-    SwipeableDrawer, Tab,
-    Tabs, Toolbar,
+    SwipeableDrawer,
+    Tab,
+    Tabs,
+    Toolbar,
     useMediaQuery,
-    useScrollTrigger
+    useScrollTrigger,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles, useTheme } from "@material-ui/styles";
@@ -115,12 +118,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Header = () => {
+const Header = ({ setMenuIndex, serviceIndex, setServiceIndex, menuIndex }) => {
     const classes = useStyles();
     //menu index state value
-    const [menuIndex, setMenuIndex] = useState(0);
-    //service dropdown selected state value
-    const [serviceIndex, setServiceIndex] = useState(0);
+
     const [openDrawer, setOpenDrawer] = useState(false);
     const theme = useTheme();
     const largeDevice = useMediaQuery(theme.breakpoints.up("lg"));
@@ -141,42 +142,53 @@ const Header = () => {
         setOpenMenu(true);
     };
 
-    const routes = useMemo(()=> [
-        { name: "Home", link: "/", menuIndex: 0 },
-        {
-            name: "Services",
-            link: "/services",
-            menuIndex: 1,
-            ariaOwns: anchorEl ? "simple-menu" : undefined,
-            ariaPopup: anchorEl ? "true" : undefined,
-            mouseOver: (event) => handelOpenDropdown(event),
-        },
-        { name: "The Revolution", link: "/revolution", menuIndex: 2 },
-        { name: "About Us", link: "/about", menuIndex: 3 },
-        { name: "Contact Us", link: "/contact", menuIndex: 4 },
-    ],[anchorEl]);
+    const routes = useMemo(
+        () => [
+            { name: "Home", link: "/", menuIndex: 0 },
+            {
+                name: "Services",
+                link: "/services",
+                menuIndex: 1,
+                ariaOwns: anchorEl ? "simple-menu" : undefined,
+                ariaPopup: anchorEl ? "true" : undefined,
+                mouseOver: (event) => handelOpenDropdown(event),
+            },
+            { name: "The Revolution", link: "/revolution", menuIndex: 2 },
+            { name: "About Us", link: "/about", menuIndex: 3 },
+            { name: "Contact Us", link: "/contact", menuIndex: 4 },
+        ],
+        [anchorEl]
+    );
 
-    const serviceOptions = useMemo( () =>[
-        { name: "Services", link: "/services", menuIndex: 1, serviceIndex: 0 },
-        {
-            name: "Custom Software Development",
-            link: "/customSoftware",
-            menuIndex: 1,
-            serviceIndex: 1,
-        },
-        {
-            name: "iOS/Android App Development",
-            link: "/mobileApps",
-            menuIndex: 1,
-            serviceIndex: 2,
-        },
-        {
-            name: "Website Development",
-            link: "/websites",
-            menuIndex: 1,
-            serviceIndex: 3,
-        },
-    ],[])
+    const serviceOptions = useMemo(
+        () => [
+            {
+                name: "Services",
+                link: "/services",
+                menuIndex: 1,
+                serviceIndex: 0,
+            },
+            {
+                name: "Custom Software Development",
+                link: "/customSoftware",
+                menuIndex: 1,
+                serviceIndex: 1,
+            },
+            {
+                name: "iOS/Android App Development",
+                link: "/mobileApps",
+                menuIndex: 1,
+                serviceIndex: 2,
+            },
+            {
+                name: "Website Development",
+                link: "/websites",
+                menuIndex: 1,
+                serviceIndex: 3,
+            },
+        ],
+        []
+    );
 
     useEffect(() => {
         [...serviceOptions, ...routes].forEach((route) => {
@@ -193,7 +205,14 @@ const Header = () => {
                     break;
             }
         });
-    }, [menuIndex, routes, serviceIndex, serviceOptions]);
+    }, [
+        routes,
+        menuIndex,
+        setMenuIndex,
+        serviceIndex,
+        serviceOptions,
+        setServiceIndex,
+    ]);
 
     const tabs = (
         <React.Fragment>
